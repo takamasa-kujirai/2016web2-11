@@ -75,31 +75,25 @@
        if (!window.File) {
       window.alert("本ブラウザではFile APIが使えません");
     } else {
-       // File APIが実装されている場合には、dropイベントを登録
       document.getElementById("drop").addEventListener("drop", onDrop, false);
     }
-    // Drop領域にドロップした際のファイルのプロパティ情報読み取り処理
     function onDrop(event){
       var files = event.dataTransfer.files;
       var info = document.getElementById("info");
       var disp = document.getElementById("disp");
       disp.innerHTML ="";
-      // ファイルの配列から1つずつファイルを選択
       for(var i=0; i< files.length; i++){
         var f = files[i];
         info.innerHTML += "ファイル名 :" + f.name + "ファイルの型:" + f.type + "ファイルサイズ:" + f.size / 1000 + " KB " + "<br />";
         // ①FileReaderオブジェクトの生成
         var reader = new FileReader();
-        // ②画像ファイルかテキストファイルかを判定
         if (!f.type.match('image.*') && !f.type.match('text.*')) {
           alert("画像ファイルとテキストファイル以外は表示できません。");
           continue;
         }
-        // ③エラー発生時の処理
         reader.onerror = function (evt) {
           disp.innerHTML = "読み取り時にエラーが発生しました。";
         }
-        // ④画像ファイルの場合の処理
         if (f.type.match('image.*')) {
           // ファイル読取が完了した際に呼ばれる処理
           reader.onload = function (evt) {
@@ -110,25 +104,18 @@
             li.innerHTML += "<br />";
             disp.appendChild(li);
           }
-          // readAsDataURLメソッドでファイルの内容を取得
           reader.readAsDataURL(f);
         }
-        // ⑤テキストファイルの場合の処理
         if (f.type.match('text.*')) {
-          // ファイル読取が完了した際に呼ばれる処理
           reader.onload = function (evt) {
-            // FileReaderが取得したテキストをそのままdivタグに出力
             disp.innerHTML = reader.result;
           }
-          // readAsTextメソッドでファイルの内容を取得
           reader.readAsText(f, 'utf-8');
         }
       }
-      // ⑥ブラウザ上でファイルを展開する挙動を抑止
       event.preventDefault();
     }
     function onDragOver(event){ 
-      // ⑥ブラウザ上でファイルを展開する挙動を抑止
       event.preventDefault(); 
     }
   </script>
